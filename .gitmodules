@@ -1,0 +1,3 @@
+[submodule "external/trl"]
+	path = external/trl
+	url = https://github.com/huggingface/trl.git
