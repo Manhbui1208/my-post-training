@@ -21,44 +21,9 @@ With the policy network $\pi_\theta$, the **sampling process** start at each tim
 4. **Store trajectory** $(s_t, a_t, r_t, s_{t+1})$ in a buffer.
 
 After finishing sampling, the **policy optimization** start:
-
-Goal: maximize expected discounted return  
+#### 🔸 Step 1. Compute the advantage
+Measure how much better an action was compared to the expected value:
 $$
-J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta}\!\left[\sum_t \gamma^t r_t\right]
+A_t = r_t + \gamma V(s_{t+1}) - V(s_t)
 $$
-
-PPO updates the policy by comparing **new** and **old** log-probabilities:
-
-$$
-r_t(\theta) = 
-\frac{\pi_\theta(a_t | s_t)}{\pi_{\text{old}}(a_t | s_t)}
-= \exp(\log \pi_\theta(a_t | s_t) - \log \pi_{\text{old}}(a_t | s_t))
-$$
-
-Then optimizes the **clipped objective**:
-
-$$
-L^{\text{PPO}} = 
-\mathbb{E}_t
-\left[
-\min\big(
-r_t A_t,\;
-\text{clip}(r_t, 1-\epsilon, 1+\epsilon)A_t
-\big)
-\right]
-$$
-
----
-
-### ⚙️ Advantage Estimation (GAE)
-
-To stabilize training, advantages are computed with **Generalized Advantage Estimation (GAE)**:
-
-$$
-\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)
-$$
-$$
-A_t = \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}
-$$
-
----
+(Positive $A_t$ → good action, Negative $A_t$ → bad action)
