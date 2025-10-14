@@ -3,7 +3,13 @@
 This note summarizes the key flow of **Proximal Policy Optimization (PPO)** and how it is implemented for **language models** in the [HuggingFace TRL](https://github.com/huggingface/trl) library.
 
 ## PPO Overview
-PPO is a policy gradient optimization method in RL which maximizes expected rewards while avoiding unstable update with a clipping mechanism. Given an **environment** $$\mathcal{M} = (\mathcal{S}, \mathcal{A}, P, r, \gamma)$$
+PPO is a policy gradient optimization method in RL which maximizes expected rewards while avoiding unstable update with a clipping mechanism. Given an **environment** $$(\mathcal{S}, \mathcal{A}, P, r, \gamma)$$ where:
+- $\mathcal{S}$ — state space  
+- $\mathcal{A}$ — action space  
+- $P(s'|s,a)$ — transition probability  
+- $r(s,a)$ — reward function  
+- $\gamma \in [0,1]$ — discount factor
+
 - Agent observes **state $s_t$**.
 - Policy **πθ** outputs **action `a_t` ~ πθ(a|s_t)** (e.g., move left / generate next token).
 - Environment returns:
