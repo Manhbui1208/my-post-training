@@ -23,7 +23,9 @@ With the policy network $\pi_\theta$, the **sampling process** start at each tim
 After finishing sampling, the **policy optimization** start:
 #### 🔸 Step 1. Compute the advantage
 Measure how much better an action was compared to the expected value:
+
 $$
 A_t = r_t + \gamma V(s_{t+1}) - V(s_t)
 $$
+
 (Positive $A_t$ → good action, Negative $A_t$ → bad action)
