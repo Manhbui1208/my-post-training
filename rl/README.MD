@@ -29,3 +29,34 @@ A_t = r_t + \gamma V(s_{t+1}) - V(s_t)
 $$
 
 (Positive $A_t$ → good action, Negative $A_t$ → bad action)
+
+#### 🔸 Step 2. Compute the policy ratio
+Compare the new and old policy probabilities:
+
+$$
+r_t = \frac{\pi_\theta(a_t | s_t)}{\pi_{\text{old}}(a_t | s_t)}
+$$
+
+If $r_t > 1$, the new policy thinks this action is **more likely** than before.
+
+#### 🔸 Step 3. Apply clipping
+Prevent the update from changing too much:
+
+$$
+L^{\text{PPO}} = \mathbb{E}_t \big[
+\min(r_t A_t,\; \text{clip}(r_t, 1-\epsilon, 1+\epsilon)A_t)
+\big]
+$$
+
+→ Clipping keeps the policy within a “trust region” (small, stable steps).
+
+#### 🔸 Step 4. Add value loss and entropy bonus
+- **Value loss**: make $V(s_t)$ fit the true returns  
+- **Entropy bonus**: encourage exploration (avoid collapse)
+
+$$
+L_\text{total} = L^{\text{PPO}} + c_v (V - R)^2 - c_e \, \mathcal{H}[\pi_\theta]
+$$
+
+#### 🔸 Step 5. Update parameters
+Backpropagate $L_\text{total}$ and update both networks:
