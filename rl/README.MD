@@ -61,4 +61,4 @@ L_\text{total} = L^{\text{PPO}} + c_v (V - R)^2 - c_e \, \mathcal{H}[\pi_\theta]
 $$
 
 #### 🔸 Step 5. Update parameters
-Backpropagate $L_\text{total}$ and update both networks:
+Backpropagate $L_\text{total}$ and update both actor (policy) and critic (value) networks using the baseline optimizers (e.g., Adam, SGD).
