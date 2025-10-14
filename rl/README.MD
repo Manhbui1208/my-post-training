@@ -10,15 +10,16 @@ PPO is a policy gradient optimization method in RL which maximizes expected rewa
 - $r(s,a)$: reward function  
 - $\gamma \in [0,1]$: discount factor
 
-The sampling process start at each timestep $t$:
+With the policy network $\pi_\theta$, the sampling process start at each timestep $t$:
 
-**Agent observes** the current state: $$s_t \in \mathcal{S}$$
+1. **Agent observes** the current state: $$s_t \in \mathcal{S}$$
 
 **Policy network outputs** an action sampled from its distribution: $$a_t \sim \pi_\theta(a_t | s_t)$$
 
 **Environment transitions** to the next state and gives a reward $$s_{t+1} \sim P(\cdot | s_t, a_t), \quad r_t = r(s_t, a_t)$$
 
 **Store trajectory** $(s_t, a_t, r_t, s_{t+1})$ in a buffer.
+
 ---
 
 ### 🎯 Policy Optimization
