@@ -10,11 +10,66 @@ PPO is a policy gradient optimization method in RL which maximizes expected rewa
 - $r(s,a)$: reward function  
 - $\gamma \in [0,1]$: discount factor
 
-- Agent observes **state $s_t$**.
-- Policy **πθ** outputs **action `a_t` ~ πθ(a|s_t)** (e.g., move left / generate next token).
-- Environment returns:
-  - **next state `s_{t+1}`**
-  - **reward `r_t`**
-  - **done flag** (if episode ends)
+At each timestep $t$:
 
-→ These tuples `(s_t, a_t, r_t, s_{t+1})` are stored in a **rollout buffer**.
+1. **Agent observes** the current state  
+   $$
+   s_t \in \mathcal{S}
+   $$
+
+2. **Policy outputs** an action sampled from its distribution  
+   $$
+   a_t \sim \pi_\theta(a_t | s_t)
+   $$
+
+3. **Environment transitions** to the next state and gives a reward  
+   $$
+   s_{t+1} \sim P(\cdot | s_t, a_t), \quad r_t = r(s_t, a_t)
+   $$
+
+4. **Store trajectory** $(s_t, a_t, r_t, s_{t+1})$ in a buffer.
+
+---
+
+### 🎯 Policy Optimization
+
+Goal: maximize expected discounted return  
+$$
+J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta}\!\left[\sum_t \gamma^t r_t\right]
+$$
+
+PPO updates the policy by comparing **new** and **old** log-probabilities:
+
+$$
+r_t(\theta) = 
+\frac{\pi_\theta(a_t | s_t)}{\pi_{\text{old}}(a_t | s_t)}
+= \exp(\log \pi_\theta(a_t | s_t) - \log \pi_{\text{old}}(a_t | s_t))
+$$
+
+Then optimizes the **clipped objective**:
+
+$$
+L^{\text{PPO}} = 
+\mathbb{E}_t
+\left[
+\min\big(
+r_t A_t,\;
+\text{clip}(r_t, 1-\epsilon, 1+\epsilon)A_t
+\big)
+\right]
+$$
+
+---
+
+### ⚙️ Advantage Estimation (GAE)
+
+To stabilize training, advantages are computed with **Generalized Advantage Estimation (GAE)**:
+
+$$
+\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)
+$$
+$$
+A_t = \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}
+$$
+
+---
