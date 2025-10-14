@@ -28,7 +28,7 @@ $$
 A_t = r_t + \gamma V(s_{t+1}) - V(s_t)
 $$
 
-Value function $V(s_t)$ aim to estimate the expected value in the future (next time step) if the agent follow the strategy $(s_t, a_t)$. The advantage function (GAE) uses current reward feedback ($r_t$) additioned with the near predicted future ($V(s_{t+1})$: the expected value of the next state) and the current $V(s_t)$ to show if the current action-state can help the agent gain better results than expected or not. => (Positive $A_t$ → good action which is better than expectation from $V(s_t)$, Negative $A_t$ → bad action)
+Value function $V(s_t)$ aim to estimate the **expected average value** in the future (next time step) if the agent follow the strategy $(s_t, a_t)$. The advantage function (GAE) uses current reward feedback ($r_t$) additioned with the near predicted future ($V(s_{t+1})$: the expected value of the next state) and the current $V(s_t)$ to show if the current action-state can help the agent gain better results than expected or not. => (Positive $A_t$ → good action which is better than expectation from $V(s_t)$, Negative $A_t$ → bad action)
 
 #### 🔸 Step 2. Compute the policy ratio
 Compare the new and old policy probabilities:
