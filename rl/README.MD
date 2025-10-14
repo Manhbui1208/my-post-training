@@ -42,7 +42,7 @@ $$
 If $r_t > 1$, the new policy thinks this action is **more likely** than before.
 
 #### 🔸 Step 3. Apply clipping
-Prevent the update from changing too much:
+Prevent the update from changing too much via **Clipped Surrogate Objective**:
 
 $$
 L^{\text{PPO}} = \mathbb{E}_t \big[
