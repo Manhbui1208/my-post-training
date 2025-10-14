@@ -5,7 +5,7 @@ This note summarizes the key flow of **Proximal Policy Optimization (PPO)** and 
 ## TODO List
 - [x] Overview note of PPO ✅  
 - [ ] Implement PPO from scratch
-- [ ] Taking deeper on PPO from RL viewpoint 
+- [ ] Taking deeper on PPO from RL viewpoint (review problems from the root of RL)
 - [ ] Overview of RLHF-PPO implementation/understanding in LLM
 - [x] Toy test PPO4LLM with TRL ✅
 
