@@ -41,7 +41,7 @@ $$
 
 If $r_t > 1$, the new policy thinks this action is **more likely** than before.
 
-#### 🔸 Step 3. Apply clipping
+#### 🔸 Step 3. Apply Clipping for Actor's Loss 
 Prevent the update from changing too much via **Clipped Surrogate Objective**:
 
 $$
