@@ -1,0 +1,20 @@
+# Ignore datasets and output
+data/
+trainer_output/
+
+# Ignore local test and accelerate configs
+test.py
+accelerate_config_mps.yaml
+
+# Ignore typical Python cache & environment files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv
+*.log
+
+# Ignore VSCode and Mac system files
+.vscode/
+.DS_Store
