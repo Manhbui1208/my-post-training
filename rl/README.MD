@@ -30,6 +30,8 @@ $$
 
 Value function $V(s_t)$ aim to estimate the **expected average value** in the future (next time step) if the agent follow the strategy $(s_t, a_t)$. The advantage function (GAE) uses current reward feedback ($r_t$) additioned with the near predicted future ($V(s_{t+1})$: the expected value of the next state) and the current $V(s_t)$ to show if the current action-state can help the agent gain better results than expected or not. => (Positive $A_t$ → good action which is better than expectation from $V(s_t)$, Negative $A_t$ → bad action)
 
+Imagination: Player (Actor) make a move (obtained $r_t$ with ($s_t, a_t$)) and the referee (Critic/Value func) said that "if you play like this, your average score will be 0.5", but the actual result (current environment feedback $r_t$ + expected value of next step $V(s_{t+1})$) is 0.8 -> actor made a good move -> increase the probability for choosing that move.
+
 #### 🔸 Step 2. Compute the policy ratio
 Compare the new and old policy probabilities:
 
