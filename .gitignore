@@ -1,6 +1,7 @@
 # Ignore datasets and output
 data/
 trainer_output/
+checkpoints/
 
 # Ignore local test and accelerate configs
 test.py
