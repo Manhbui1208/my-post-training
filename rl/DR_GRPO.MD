@@ -31,9 +31,9 @@ At generation step `t`, the state is the concatenation of:
 1. the input question/prompt `q`
 2. the output tokens generated so far `o_<t`
 
-```math
+$$
 s_t = q ; o_{<t}
-```
+$$
 
 or explicitly:
 
