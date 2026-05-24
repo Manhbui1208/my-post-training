@@ -32,7 +32,7 @@ At generation step `t`, the state is the concatenation of:
 2. the output tokens generated so far `o_<t`
 
 $$
-s_t = q ; o_{<t}
+s_t = q ; o_{\lt t}
 $$
 
 or explicitly:
