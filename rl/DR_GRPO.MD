@@ -226,7 +226,7 @@ $$
 Here, the Shannon Entropy $\mathcal{H}$ acts as a cost for overconfidence. Based on the MaxEnt principle, because we only constrain the expected rewards, the optimal policy is mathematically forced to take the Boltzmann (Softmax) form:
 
 $$
-\pi^*(a|s) \propto \exp\left(\frac{Q^*(s,a)}{\alpha}\right)
+\pi^* (a|s) \propto \exp\left(\frac{Q^*(s,a)}{\alpha}\right)
 $$
 
 - In DRL, SAC is the pure, deep realization of this principle. It modifies the foundational Bellman Equation into the Soft Bellman Equation, explicitly training the network to converge onto the exact Boltzmann distribution derived above.
