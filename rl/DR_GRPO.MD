@@ -130,12 +130,7 @@ Before considering this objective for Language Model Post-Training, let's look b
 In basic RL, the objective function is defined by: 
 
 $$
-J(\pi_\theta)
-=
-\mathbb{E}_{\tau \sim \pi_\theta}
-\left[
-R(\tau)
-\right]
+J(\pi_\theta) = \mathbb{E}_{\tau \sim \pi_\theta} \left[ R(\tau) \right]
 $$
 
 where $\tau$ is a trajectory sampled from the policy $\pi_\theta$, and $R(\tau)$ is the total return of that trajectory. 
@@ -143,12 +138,7 @@ where $\tau$ is a trajectory sampled from the policy $\pi_\theta$, and $R(\tau)$
 In policy gradient, we update the policy parameters $\theta$ in the direction that increases the expected return:
 
 $$
-\nabla_\theta J(\pi_\theta)
-=
-\mathbb{E}_{\tau \sim \pi_\theta}
-[
-\nabla_\theta \log \pi_\theta(\tau) R(\tau)
-]
+\nabla_\theta J(\pi_\theta) = \mathbb{E}_{\tau \sim \pi_\theta} [ \nabla_\theta \log \pi_\theta(\tau) R(\tau)]
 $$
 
 In simple terms:
