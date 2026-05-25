@@ -196,7 +196,7 @@ $$
 
 If we already have a prior distribution $p_0(x)$, the principle becomes Minimizing Relative Entropy (also known as KL divergence). Instead of choosing the distribution closest to uniform, we choose the distribution closest to the prior while satisfying the known constraints.
 
-For example, if the added constraint is an expected value condition: $ \mathbb{E}_{p}[f(x)] = c,$
+For example, if the added constraint is an expected value condition: $\mathbb{E}_{p}[f(x)] = c$,
 
 then the solution has the form:
 
