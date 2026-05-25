@@ -125,7 +125,7 @@ $$
 J(\pi_\theta)= \mathbb{E}_{q \sim p_Q} \left[\mathbb{E}_{o \sim \pi_\theta(\cdot \mid q)} \left[R(q,o) \right] - \beta D_{\mathrm{KL}} \left[ \pi_\theta(\cdot \mid q) \,\|\ \pi_{\mathrm{ref}}(\cdot \mid q) \right] \right]
 $$
 
-Before considering this objective for Language Model Post-Training, let's look back to its fundamental lens (Traditional RL => Policy Gradient => Entropy-Regularized RL). 
+Before considering this objective for Language Model Post-Training, let's look back to its fundamental lens (Traditional RL => Policy Gradient => Information Theory => Entropy/KL-Regularized RL). 
 
 In basic RL, the objective function is defined by: 
 
@@ -146,9 +146,9 @@ In simple terms:
 > - In traditional RL lens, just increase the probability of trajectories that have high total reward
 > - In LLM post-training lens, as $\log \pi_\theta(\tau) = \sum_t \log \pi_\theta(o_t | q, o_{<t})$, the gradient scales the log-probability of every individual token in high-reward responses.
 
-However, maximizing return alone can make the policy collapse too early into deterministic actions. `Entropy-regularized RL` reframes this by bridging the `Maximum Entropy Principle` from information theory to policy optimization. Under this view, **the policy does not only maximize reward but also being regularized by an information/certainty cost**, which discourages the policy from becoming more confident than the reward evidence justifies. Here, let's revisit the basic concepts of Maximum Entropy Principle.
+However, maximizing return alone can make the policy collapse too early into deterministic actions. `Entropy/KL-regularized RL` reframes this by bridging the `Maximum Entropy Principle` from information theory to policy optimization. Under this view, **the policy does not only maximize reward but also being regularized by an information/certainty cost**, which discourages the policy from becoming more confident than the reward evidence justifies. Here, let's revisit the basic concepts of Maximum Entropy Principle.
 
-### Maximum Entropy Principle
+### Maximum Entropy Principle (MaxEnt)
 
 The maximum entropy principle comes from information theory. It says that *the most unbiased, logically consistent probability distribution to represent a system is the one that maximizes Shannon entropy, subject to whatever partial information or constraints are already known*
 
@@ -208,9 +208,16 @@ $$
 
 Therefore, the general idea is:
 
-> maximum entropy determines the least committed distribution allowed by the constraints; adding more knowledge changes the form of the distribution.
+> maximum entropy determines the least committed distribution allowed by the constraints; adding more knowledge (more constraints) changes the form of the distribution.
 
-Entropy-regularized RL modifies the objective by adding an entropy bonus:
+### Bridging MaxEnt to modern Deep RL 
+
+In RL, the agent makes a sequential decisions over time (a trajectory $\tau$). By applying the Maximum Entropy Principle to the distribution of these trajectories, the abstract information-theoretic limits directly dictate the design of modern DRL algorithms. Depending on what we use as the Prior Base, the MaxEnt principle naturally splits DRL into two grand paradigms:
+
+#### A. The Uniform Prior Paradigm: Entropy-Regularized RL (Soft RL)
+When an agent enters an unknown environment with no pre-existing skills, its default state of knowledge is a Uniform Prior.
+
+To maximize the trajectory entropy subject to the expected reward constraint, we flip the Boltzmann Lagrange formulation into an unconstrained objective function:
 
 $$
 J_{\text{ent}}(\pi_\theta)
@@ -221,56 +228,35 @@ J_{\text{ent}}(\pi_\theta)
 \left(
 r(s_t,a_t)
 +
-\alpha H(\pi_\theta(\cdot|s_t))
+\alpha \mathcal{H}(\pi_\theta(\cdot|s_t))
 \right)
 \right].
 $$
 
-The entropy term encourages the policy to remain stochastic, which helps exploration and prevents premature collapse.
+Here, the Shannon Entropy $\mathcal{H}$ acts as a cost for overconfidence. Based on the MaxEnt principle, because we only constrain the expected rewards, the optimal policy is mathematically forced to take the Boltzmann (Softmax) form:
 
-From an information-theoretic perspective, entropy regularization can be viewed as a special case of KL regularization. Since
+$$\pi^*(a|s) \propto \exp\left(\frac{Q^*(s,a)}{\alpha}\right)$$
 
-$$
-H(\pi(\cdot|s))
-=
-\log |\mathcal{A}|
--
-D_{\mathrm{KL}}
-\left(
-\pi(\cdot|s)
-\| U(\cdot|s)
-\right),
-$$
+- In DRL, SAC is the pure, deep realization of this principle. It modifies the foundational Bellman Equation into the Soft Bellman Equation, explicitly training the network to converge onto the exact Boltzmann distribution derived above.
 
-maximizing entropy is equivalent to minimizing KL divergence from a uniform action prior, up to a constant.
+- In policy gradient methods like standard PPO, this term is often added as a shallow heuristic (entropy bonus) simply to inject noise and patch the exploration problem.
 
-Therefore, entropy regularization can be interpreted as KL regularization toward a uniform prior.
+#### B. The Informative Prior Paradigm: KL-Regularized RL
 
-A natural generalization is to replace the uniform prior with an informative prior policy \(\pi_0\):
+When we do not start from scratch, but already possess a valuable baseline policy, maximizing entropy toward a uniform distribution becomes counterproductive. Instead, we transition to Minimizing Relative Entropy (KL Divergence) toward an informative prior policy ($\pi_0$).By substituting the uniform base with $\pi_0$, the objective transforms into:
 
-$$
-J_{\text{KL}}(\pi_\theta)
-=
-\mathbb{E}_{\tau \sim \pi_\theta}
-\left[
-\sum_t \gamma^t
-\left(
-r(s_t,a_t)
--
-\beta
-D_{\mathrm{KL}}
-\left(
-\pi_\theta(\cdot|s_t)
-\|
-\pi_0(\cdot|s_t)
-\right)
-\right)
-\right].
-$$
+$$J_{\text{KL}}(\pi_\theta) = \mathbb{E}_{\tau \sim \pi_\theta} \left[ \sum_t \gamma^t r(s_t, a_t) \right] - \beta \mathbb{D}_{\text{KL}}(\pi_\theta \parallel \pi_0)$$
 
-Here, \(\pi_0\) can represent prior knowledge, such as an expert policy, a behavior policy, the previous policy, or a pretrained model.
+Following a sketchy view on Exponential Tilting of MaxEnt we derived earlier, the optimal policy cannot be anything other than the prior baseline tilted by the reward signal: 
 
-Thus, entropy-regularized RL is the special case where the prior is uniform, while KL-regularized RL allows the prior to be informative.
+$$\pi^* \propto \pi_0 \exp(\cdot)$$
+
+This paradigm anchors two major milestones in RL history based on how $\pi_0$ is defined:
+
+- Moving Prior (TRPO / PPO-family): Here, $\pi_0 = \pi_{\text{old}}$ (the policy from the previous training iteration). The constraint is optimization stability. The algorithm forces the new policy to stay close to its immediate past self to prevent catastrophic gradient collapses during training.
+
+- Frozen Prior (LLM Post-Training / PPO-HF / DPO): Here, $\pi_0 = \pi_{\text{ref}}$ (the frozen Supervised Fine-Tuned model). The constraint is knowledge preservation. The algorithm forces the LLM to optimize for human preferences (rewards) but strictly penalizes it if it drifts away from its foundational linguistic and factual capabilities ($\pi_{\text{ref}}$).
+
 
 ## References
 
