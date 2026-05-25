@@ -219,7 +219,7 @@ $$
 J_{\text{ent}}(\pi_\theta)=\mathbb{E}_{\tau \sim \pi_\theta} \left[\sum_t \gamma^t \left(r(s_t,a_t) + \alpha \mathcal{H}(\pi_\theta(\cdot|s_t)) \right)\right]
 $$
 
-Here, the Shannon Entropy $\mathcal{H}$ acts as a cost for overconfidence. Based on the MaxEnt principle, because we only constrain the expected rewards, the optimal policy is mathematically forced to take the Boltzmann (Softmax) form:
+Here, the Shannon Entropy $\mathcal{H}$ acts as a cost for overconfidence. Based on the MaxEnt principle, because we only constrain the expected rewards, the optimal policy is under idealized assumptions to take the Boltzmann (Softmax) form:
 
 $$
 \pi^* (a|s) \propto \exp\left(\frac{Q^*(s,a)}{\alpha}\right)
@@ -245,7 +245,9 @@ This paradigm anchors two major milestones in RL based on how $\pi_0$ is defined
 
 - Frozen Prior (LLM Post-Training / PPO-HF / DPO): Here, $\pi_0 = \pi_{\text{ref}}$ (the frozen Supervised Fine-Tuned model). The constraint is knowledge preservation. The algorithm forces the LLM to optimize for human preferences (rewards) but strictly penalizes it if it drifts away from its foundational linguistic and factual capabilities ($\pi_{\text{ref}}$).
 
-> Notes: *Entropy maximization can be interpreted as minimizing KL divergence to a uniform prior, while KL regularization generalizes this idea to an informative prior such as an old policy or a frozen reference model. $H(\pi) = \log |A| - D_{\text{KL}}(\pi \parallel U)$*
+> Notes: *Entropy maximization can be interpreted as minimizing KL divergence to a uniform prior, while KL regularization generalizes this idea to an informative prior such as an old policy or a frozen reference model*. $H(\pi) = \log |A| - D_{\text{KL}}(\pi \parallel U)$
+
+> **Takeaway**: *MaxEnt does not guarantee that the learned distribution is semantically correct or genuinely intelligent. It guarantees the least-committed distribution (high-volume information) under the given constraints. Therefore, the quality of the resulting policy depends on the quality of the constraints: reliable reward/verifier evidence can induce useful information shift, while biased or sparse evidence can still produce a MaxEnt-optimal distribution that learns artifacts rather than true reasoning.*
 
 ### RL in LLM Post-Training through MaxEnt Lens
 
