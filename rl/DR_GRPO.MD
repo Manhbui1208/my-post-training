@@ -265,7 +265,7 @@ After revisiting some fundamental concepts, we can see it as an unconstrained La
 
 - The Informative Prior ($\pi_{\text{ref}}$): Instead of assuming a flat action space (Uniform Prior), the system anchors itself to the SFT model. This constrains the optimization manifold strictly within the probability space of pre-existing linguistic capability and factual knowledge.
 
-- The Constraint Feature ($R(q,o)$): The Reward Model acts exactly as the feature function $f(x)$ in the expected value constraint ($\mathbb{E}_{\pi}[f(x)] = c$). It dictates the directional vector along which the prior distribution will be deformed.
+- The Constraint Feature ($ R(q,o) $): The Reward Model acts exactly as the feature function $f(x)$ in the expected value constraint ($\mathbb{E}_{\pi}[f(x)] = c$). It dictates the directional vector along which the prior distribution will be deformed.
 
 - The Dual Coefficient / Inverse Multiplier ($\beta$): The KL weight defines the exact exchange rate between reward maximization and information divergence. In the pure MaxEnt primal problem (minimizing KL subject to a reward target), $\beta$ represents the inverse Lagrange multiplier ($\beta = 1/\lambda$).
 
