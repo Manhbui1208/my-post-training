@@ -210,9 +210,11 @@ Therefore, the general idea is:
 
 > maximum entropy determines the least committed distribution allowed by the constraints; adding more knowledge (more constraints) changes the form of the distribution.
 
-### Bridging MaxEnt to modern Deep RL 
+### Conceptual Lens of Deep RL via MaxEnt
 
-In RL, the agent makes a sequential decisions over time (a trajectory $\tau$). By applying the Maximum Entropy Principle to the distribution of these trajectories, the abstract information-theoretic limits directly dictate the design of modern DRL algorithms. Depending on what we use as the Prior Base, the MaxEnt principle naturally splits DRL into two grand paradigms:
+In RL, the agent makes a sequential decisions over time (a trajectory $\tau$). By applying the Maximum Entropy Principle to the distribution of these trajectories, the abstract information-theoretic limits directly dictate the design of modern DRL algorithms. Depending on what we use as the Prior Base, the MaxEnt principle naturally splits DRL into two conceptual paradigms. 
+
+> Notes: *In practical DRL, because the settings also depend on KL direction, state-wise vs trajectory-level objective, discrete vs continuous actions, and objective implementations, this MaxEnt-based distinction is not the strict taxonomy of DRL.*
 
 #### A. The Uniform Prior Paradigm: Entropy-Regularized RL (Soft RL)
 When an agent enters an unknown environment with no pre-existing skills, its default state of knowledge is a Uniform Prior.
@@ -239,7 +241,7 @@ When we do not start from scratch, but already possess a valuable baseline polic
 
 $$J_{\text{KL}}(\pi_\theta) = \mathbb{E}_{\tau \sim \pi_\theta} \left[ \sum_t \gamma^t r(s_t, a_t) \right] - \beta \mathbb{D}_{\text{KL}}(\pi_\theta \parallel \pi_0)$$
 
-Following a sketchy view on Exponential Tilting of MaxEnt we derived earlier, the optimal policy cannot be anything other than the prior baseline tilted by the reward signal: 
+Following a sketchy view on Exponential Tilting of MaxEnt we derived earlier, the optimal policy is naturally characterized by the prior baseline tilted by the reward signal: 
 
 $$\pi^* \propto \pi_0 \exp(\cdot)$$
 
@@ -248,6 +250,8 @@ This paradigm anchors two major milestones in RL based on how $\pi_0$ is defined
 - Moving Prior (TRPO / PPO-family): Here, $\pi_0 = \pi_{\text{old}}$ (the policy from the previous training iteration). The constraint is optimization stability. The algorithm forces the new policy to stay close to its immediate past self to prevent catastrophic gradient collapses during training.
 
 - Frozen Prior (LLM Post-Training / PPO-HF / DPO): Here, $\pi_0 = \pi_{\text{ref}}$ (the frozen Supervised Fine-Tuned model). The constraint is knowledge preservation. The algorithm forces the LLM to optimize for human preferences (rewards) but strictly penalizes it if it drifts away from its foundational linguistic and factual capabilities ($\pi_{\text{ref}}$).
+
+> Notes: *Entropy maximization can be interpreted as minimizing KL divergence to a uniform prior, while KL regularization generalizes this idea to an informative prior such as an old policy or a frozen reference model. $H(\pi) = \log |A| - D_{\text{KL}}(\pi \parallel U)$*
 
 ### RL in LLM Post-Training through MaxEnt Lens
 
@@ -265,7 +269,7 @@ After revisiting some fundamental concepts, we can see it as an unconstrained La
 
 - The Dual Coefficient / Inverse Multiplier ($\beta$): The KL weight defines the exact exchange rate between reward maximization and information divergence. In the pure MaxEnt primal problem (minimizing KL subject to a reward target), $\beta$ represents the inverse Lagrange multiplier ($\beta = 1/\lambda$).
 
-Because this objective perfectly satisfies the mathematical dual of a MaxEnt problem, the policy is logically coerced into the exact Exponential Tilting closed-form solution:
+Because this objective matches the structure of the mathematical dual of a MaxEnt problem, the policy leads to the exact Exponential Tilting closed-form solution:
 
 $$
 \pi^* (o \mid q) = \frac{1}{Z(q)} \pi_{\text{ref}}(o \mid q) \exp \left( \frac{R(q, o)}{\beta} \right)
@@ -281,7 +285,10 @@ $$
 * **The Drift:** As the policy $\pi_\theta$ optimizes during the RL phase, it shifts away from $\pi_{\text{ref}}$ and enters new token spaces to maximize scores. 
 * **The Exploitation:** These new token patterns become Out-of-Distribution (OOD) for the frozen Reward Model. If $R_\phi$ erroneously extrapolates an absurdly high score for an OOD pattern, the $\exp(\cdot)$ term amplifies this error exponentially, forcing the policy to abandon the prior and cheat the system.
 
-3. Stylistic Alignment vs. Substantive Correctness: The standard MaxEnt expected value constraint ($\mathbb{E}_{\pi}[R(q,o)] = c$) forces the distribution to tilt toward features preferred by the RM. However, learned Reward Models are notoriously biased toward stylistic features (e.g., length, sycophancy, polite formatting) rather than substantive correctness (e.g., mathematical truth, logical consistency).Consequently, the framework structurally deforms the LLM into a fluent but potentially **hallucinating model** (maximizing the superficial constraint criteria while degrading the underlying reasoning capabilities).
+3. Stylistic Alignment vs. Substantive Correctness: The standard MaxEnt expected value constraint ($\mathbb{E}_{\pi}[R(q,o)] = c$) forces the distribution to tilt toward features preferred by the RM. However, learned Reward Models are notoriously biased toward stylistic features (e.g., length, sycophancy, polite formatting) rather than substantive correctness (e.g., mathematical truth, logical consistency). Consequently, the framework structurally deforms the LLM into a fluent but potentially **hallucinating model** (maximizing the superficial constraint criteria while degrading the underlying reasoning capabilities).
+
+### RL with Verifiable Reward (RLVR)
+
 
 
 ## References
