@@ -119,13 +119,7 @@ A full trajectory is the full generated response: $[q;o]$, where $o = [o_1, o_2,
 
 ## 1.6. RL Objective in LLM Post-Training
 
-The key idea of RL for LLM post-training is to maximize the entropy/KL-regularized objective ([Schulman et al., 2017a](#ref-schulman2017a)), which encourages the policy to generate the high-reward responses while staying close to reference model:
-
-$$
-J(\pi_\theta)= \mathbb{E}_{q \sim p_Q} \left[\mathbb{E}_{o \sim \pi_\theta(\cdot \mid q)} \left[R(q,o) \right] - \beta D_{\mathrm{KL}} \left[ \pi_\theta(\cdot \mid q) \,\|\ \pi_{\mathrm{ref}}(\cdot \mid q) \right] \right]
-$$
-
-Before considering this objective for Language Model Post-Training, let's look back to its fundamental lens (Traditional RL => Policy Gradient => Information Theory => Entropy/KL-Regularized RL). 
+Before considering RL objective for Language Model Post-Training, let's look back to its fundamental lens (Traditional RL => Policy Gradient => Information Theory => Entropy/KL-Regularized RL). 
 
 In basic RL, the objective function is defined by: 
 
@@ -164,7 +158,7 @@ $$
 
 A high-entropy distribution spreads probability mass more broadly, while a low-entropy distribution is more confident or concentrated.
 
-Different constraints lead to different maximum-entropy distributions.
+**Different constraints lead to different maximum-entropy distributions.**
 
 If the only constraint is that probabilities must sum to one,
 
