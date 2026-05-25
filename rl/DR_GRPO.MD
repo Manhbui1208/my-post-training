@@ -220,17 +220,7 @@ When an agent enters an unknown environment with no pre-existing skills, its def
 To maximize the trajectory entropy subject to the expected reward constraint, we flip the Boltzmann Lagrange formulation into an unconstrained objective function:
 
 $$
-J_{\text{ent}}(\pi_\theta)
-=
-\mathbb{E}_{\tau \sim \pi_\theta}
-\left[
-\sum_t \gamma^t
-\left(
-r(s_t,a_t)
-+
-\alpha \mathcal{H}(\pi_\theta(\cdot|s_t))
-\right)
-\right].
+J_{\text{ent}}(\pi_\theta)=\mathbb{E}_{\tau \sim \pi_\theta} \left[\sum_t \gamma^t \left(r(s_t,a_t) + \alpha \mathcal{H}(\pi_\theta(\cdot|s_t)) \right)\right]
 $$
 
 Here, the Shannon Entropy $\mathcal{H}$ acts as a cost for overconfidence. Based on the MaxEnt principle, because we only constrain the expected rewards, the optimal policy is mathematically forced to take the Boltzmann (Softmax) form:
