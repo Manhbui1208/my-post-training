@@ -6,6 +6,7 @@ checkpoints/
 # Ignore local test and accelerate configs
 test.py
 accelerate_config_mps.yaml
+rl/DR_GRPO.MD
 
 # Ignore typical Python cache & environment files
 __pycache__/
