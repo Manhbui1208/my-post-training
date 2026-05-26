@@ -1,4 +1,9 @@
-# Note on GRPO Done Right (DR. GRPO)
+# Note on DR. GRPO
+
+This is my personal note on the paper GRPO Done Right (DR. GRPO) ([Zichen et al., 2025](#ref-zichen2025)). The writing is done for my self-study. 
+
+---
+Some points obtained after DR.GRPO preliminary analysis:
 
 - Most base models already exhibit the self-reflection abilities (e.g., Aha moments) during pre-training (The hypothesis is "those base models are pre-trained with concatenated question-answers")
 - RL helps to amplify those self-reflection behaviors and the correct responses also increase after RL-tuned
@@ -119,7 +124,7 @@ A full trajectory is the full generated response: $[q;o]$, where $o = [o_1, o_2,
 
 ## 1.6. RL Objective in LLM Post-Training
 
-Before considering RL objective for Language Model Post-Training, let's look back to its fundamental lens (Traditional RL => Policy Gradient => Information Theory => Entropy/KL-Regularized RL). 
+Before considering RL objective for Language Model Post-Training, let's look back to its fundamental lens (Traditional RL => Policy Gradient => Maximum Entropy => Entropy/KL-Regularized RL). 
 
 In basic RL, the objective function is defined by: 
 
@@ -271,6 +276,8 @@ $$
 \pi^* (o \mid q) = \frac{1}{Z(q)} \pi_{\text{ref}}(o \mid q) \exp \left( \frac{R(q, o)}{\beta} \right)
 $$
 
+> **Takeaway**: *Via the lens of MaxEnt/KL, the RL-tuned policy should absorb new information from reward/verifier evidence, but only through a controlled shift from the reference distribution. The goal is not to abandon the base model, but to tilt the base-model distribution toward higher-reward outputs while paying a KL cost for every unnecessary deviation.*
+
 **Practical Limitations**: While the MaxEnt provides a theoretical foundation for policy alignment, its real-world implementation in RLHF suffers from critical failure modes. These failures stem directly from the divergence between theoretical assumptions and practical proxy systems.
 
 1. The Epistemological Failure (The Proxy Reward Problem): In the original formulation, the feature constraint function $f(x)$ represents absolute, infallible empirical statistics (e.g., physical laws). MaxEnt assumes that the constraints we force the policy to satisfy are ground-truth facts. In practical RLHF, the constraint $R(q,o)$ is replaced by a learned Proxy Reward Model ($R_\phi$) trained on a finite dataset of human preferences. Because the optimization system executes the MaxEnt principle flawlessly, it optimizes for the exact geometry of $R_\phi$, including all of its adversarial blind spots and overfitting artifacts. This is the root cause of **Reward Hacking**, where the policy does not break the laws of Information Theory; it obeys a corrupted constraint too well.
@@ -288,6 +295,9 @@ $$
 
 
 ## References
+
+- <a id="ref-zichen2025"></a>
+Zichen Liu et al. *Understanding r1-zero-like training: A critical perspective*. COLM, 2025. [(arxiv)](https://arxiv.org/pdf/2503.20783) 
 
 - <a id="ref-schulman2017a"></a>
 John Schulman, Xi Chen, and Pieter Abbeel. *Equivalence Between Policy Gradients and Soft Q-Learning*. arXiv preprint arXiv:1704.06440. https://arxiv.org/abs/1704.06440, 2017a.
