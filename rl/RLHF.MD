@@ -1,15 +1,6 @@
-# Note on DR. GRPO
+# Note on RLHF
 
-This is my personal note on the paper GRPO Done Right (DR. GRPO) ([Zichen et al., 2025](#ref-zichen2025)). The writing is done for my self-study. 
-
----
-Some points obtained after DR.GRPO preliminary analysis:
-
-- Most base models already exhibit the self-reflection abilities (e.g., Aha moments) during pre-training (The hypothesis is "those base models are pre-trained with concatenated question-answers")
-- RL helps to amplify those self-reflection behaviors and the correct responses also increase after RL-tuned
-- The response length also substantially increase in both correct/incorrect answers 
-- The average length of incorrect responses are notably longer than correct ones (perhaps due to hard questions require longer reasoning chains?)
-- Self-reflection does not correlate to the increased accuracy during inference (Though the self-reflection can improve exploration during training) => this behavior is not clean and accurate to explain the improved accuracy after RL.
+This is my personal note on the paper Reinforcement Learning from Human Feedback (RLHF) ([Ouyang et al., 2022](#ref-ouyang2022)). The writing is done for my self-study. 
 
 ## 1. Basics of RL for Language Models
 Language model generation can be formulated as a **token-level Markov Decision Process (MDP)**.
@@ -122,9 +113,9 @@ A full trajectory is the full generated response: $[q;o]$, where $o = [o_1, o_2,
 
 ---
 
-## 1.6. RL Objective in LLM Post-Training
+## 1.6. RL Objective in RLHF
 
-Before considering RL objective for Language Model Post-Training, let's look back to its fundamental lens (Traditional RL => Policy Gradient => Maximum Entropy => Entropy/KL-Regularized RL). 
+Before considering the objective of RLHF, let's look back to its fundamental lens (Traditional RL => Policy Gradient => Maximum Entropy => Entropy/KL-Regularized RL). 
 
 In basic RL, the objective function is defined by: 
 
@@ -252,9 +243,9 @@ However, this should be separated from surrogate objective-style optimization (T
 
 > **Takeaway**: *MaxEnt does not guarantee that the learned distribution is semantically correct or genuinely intelligent. It guarantees the least-committed distribution (high-volume information) under the given constraints. Therefore, the quality of the resulting policy depends on the quality of the constraints: reliable reward/verifier evidence can induce useful information shift, while biased or sparse evidence can still produce a MaxEnt-optimal distribution that learns artifacts rather than true reasoning.*
 
-### RL in LLM Post-Training through MaxEnt Lens
+### RLHF through MaxEnt Lens
 
-The key idea of RL for LLM post-training is to maximize the entropy/KL-regularized objective ([Schulman et al., 2017a](#ref-schulman2017a)), which encourages the policy to generate the high-reward responses while staying close to reference model:
+The key idea of RLHF-style LLM post-training is to maximize the entropy/KL-regularized objective ([Schulman et al., 2017a](#ref-schulman2017a)), which encourages the policy to generate the high-reward responses while staying close to reference model:
 
 $$
 J(\pi_\theta)= \mathbb{E}_{q \sim p_Q} \left[\mathbb{E}_{o \sim \pi_\theta(\cdot \mid q)} \left[R(q,o) \right] - \beta D_{\mathrm{KL}} \left[ \pi_\theta(\cdot \mid q) \,\|\ \pi_{\mathrm{ref}}(\cdot \mid q) \right] \right]
@@ -288,14 +279,12 @@ $$
 
 3. Stylistic Alignment vs. Substantive Correctness: The standard MaxEnt expected value constraint ($\mathbb{E}_{\pi}[R(q,o)] = c$) forces the distribution to tilt toward features preferred by the RM. However, learned Reward Models are notoriously biased toward stylistic features (e.g., length, sycophancy, polite formatting) rather than substantive correctness (e.g., mathematical truth, logical consistency). Consequently, the framework structurally deforms the LLM into a fluent but potentially **hallucinating model** (maximizing the superficial constraint criteria while degrading the underlying reasoning capabilities).
 
-### RL with Verifiable Reward (RLVR)
-
 
 
 ## References
 
-- <a id="ref-zichen2025"></a>
-Zichen Liu et al. *Understanding r1-zero-like training: A critical perspective*. COLM, 2025. [(arxiv)](https://arxiv.org/pdf/2503.20783) 
+- <a id="ref-ouyang2022"></a>
+Ouyang Long et al. *Training language models to follow instructions with human feedback*. Neurips, 2022. [(pdf)](https://proceedings.neurips.cc/paper_files/paper/2022/file/b1efde53be364a73914f58805a001731-Paper-Conference.pdf) 
 
 - <a id="ref-schulman2017a"></a>
 John Schulman, Xi Chen, and Pieter Abbeel. *Equivalence Between Policy Gradients and Soft Q-Learning*. arXiv preprint arXiv:1704.06440. https://arxiv.org/abs/1704.06440, 2017a.
